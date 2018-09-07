@@ -4,6 +4,7 @@ class Gameboard
 
   def initialize(n = 3)
     @n = n
+    @player_names = ['', '']
     @board = Array.new(n) { Array.new(n) { 0 } }
   end
 
@@ -17,6 +18,30 @@ class Gameboard
       ans += print_delimiter if ridx != (@n - 1)
     end
     ans
+  end
+
+  def set_first_player_name(name)
+    @player_names[0] = name
+  end
+
+  def set_second_player_name(name)
+    @player_names[1] = name
+  end
+
+  def in_progress?
+    @board.flatten.count(0) >= 1
+  end
+
+  def next_player
+    @board.flatten.count(0) % 2 == 1 ? 1 : 2
+  end
+
+  def next_player_name
+    @player_names[next_player - 1]
+  end
+
+  def next_player_marker
+    next_player == 1 ? PLAYER_1_MARKER : PLAYER_2_MARKER
   end
 
   private

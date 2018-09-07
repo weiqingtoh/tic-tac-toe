@@ -7,7 +7,7 @@ Simple ruby implementation of Tic-tac-toe (without AI).
 This assumes you have Ruby 2.0 or above installed. To play, run the following command:
 
 ```bash
-ruby main.rb
+ruby game.rb
 ```
 
 ### Testing
