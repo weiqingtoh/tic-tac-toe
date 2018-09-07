@@ -2,6 +2,11 @@ class Gameboard
   PLAYER_1_MARKER = 'X'.freeze
   PLAYER_2_MARKER = 'O'.freeze
 
+  # Set up instance variables. Board tracks the state of the game.
+  # For the board array:
+  #   - 0 means empty,
+  #   - 1 means marker placed by player 1,
+  #   - 2 is marker placed by player 2
   def initialize(n = 3)
     @n = n
     @player_names = ['', '']
@@ -18,6 +23,16 @@ class Gameboard
       ans += print_delimiter if ridx != (@n - 1)
     end
     ans
+  end
+
+  # Place marker given position in Tic-Tac-Toe board.
+  # Returns false if position is already taken
+  # Returns true if position update is successful
+  def place_marker(position)
+    indexes = num_to_idx(position)
+    return false if @board[indexes[0]][indexes[1]] != 0
+    @board[indexes[0]][indexes[1]] = next_player
+    true
   end
 
   def set_first_player_name(name)
