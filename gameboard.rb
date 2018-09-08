@@ -44,7 +44,52 @@ class Gameboard
   end
 
   def in_progress?
+    has_empty_boxes && !get_winner
+  end
+
+  def has_empty_boxes
     @board.flatten.count(0) >= 1
+  end
+
+  # Checks for the winner of the tic-tac-toe.
+  #
+  # Returns:
+  #   - false for a draw
+  #   - 1, if player 1 wins
+  #   - 2, if player 2 wins.
+  def get_winner
+    indexes_to_check = (0..@n-3).to_a
+
+    # Check horizontal winners
+    @board.each_with_index do |_, k|
+      indexes_to_check.each do |idx|
+        return @board[k][idx] if marked(k, idx) && similar_value([k, idx], [k, idx + 1], [k, idx + 2])
+      end
+    end
+
+    # Check vertical winners
+    @n.times do |k|
+      indexes_to_check.each do |idx|
+        return @board[idx][k] if marked(idx, k) && similar_value([idx, k], [idx + 1, k], [idx + 2, k])
+      end
+    end
+
+    # Check diagonal winners
+    indexes_to_check.each do |idx|
+      if marked(idx, idx) && similar_value([idx, idx], [idx + 1, idx + 1], [idx + 2, idx + 2])
+        return @board[idx][idx]
+      elsif marked(idx, idx + 2) && similar_value([idx, idx + 2], [idx + 1, idx + 1], [idx + 2, idx])
+        return @board[idx][idx+2]
+      end
+    end
+
+    false
+  end
+
+  def get_winner_name
+    winner = get_winner
+    return false unless winner
+    @player_names[winner]
   end
 
   def next_player
@@ -74,5 +119,17 @@ class Gameboard
 
   def print_delimiter
     "\n" + '-' * ((4 * @n) - 1) + "\n"
+  end
+
+  # Returns true if row and position is marked by player 1 or 2, otherwise return false
+  def marked(row, pos)
+    @board[row][pos] != 0
+  end
+
+  # Checks board if coordinates for a, b, c are similar.
+  #
+  # Returns true if elements in a, b and c are similar, otherwise false
+  def similar_value(a, b, c)
+    @board[a[0]][a[1]] == @board[b[0]][b[1]] && @board[b[0]][b[1]] == @board[c[0]][c[1]]
   end
 end
