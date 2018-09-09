@@ -13,16 +13,15 @@ class Gameboard
     @board = Array.new(n) { Array.new(n) { 0 } }
   end
 
+  # Prints current state of the board.
   def to_s
-    ans = ''
-    @board.each_with_index do |row, ridx|
+    @board.map.with_index do |row, ridx|
       row = row.map.with_index do |num, eidx|
-        [idx_to_num(ridx, eidx), PLAYER_1_MARKER, PLAYER_2_MARKER][num]
+        element = [idx_to_num(ridx, eidx), PLAYER_1_MARKER, PLAYER_2_MARKER][num]
+        element.to_s.rjust(char_length)
       end
-      ans += ' ' + row.join(' | ') + ' '
-      ans += print_delimiter if ridx != (@n - 1)
-    end
-    ans
+      " #{row.join(' | ')} "
+    end.join(print_delimiter)
   end
 
   # Place marker given position in Tic-Tac-Toe board.
@@ -114,7 +113,10 @@ class Gameboard
   end
 
   def print_delimiter
-    "\n" + '-' * ((4 * @n) - 1) + "\n"
+    @print_delimiter ||= begin
+      number_of_dashes = (char_length + 3) * @n - 1
+      "\n" + ('-' * number_of_dashes) + "\n"
+    end
   end
 
   def has_empty_boxes
@@ -124,6 +126,11 @@ class Gameboard
   # Returns true if row and position is marked by player 1 or 2, otherwise return false
   def marked(row, pos)
     @board[row][pos] != 0
+  end
+
+  # Strength length of maximum board number. Helper for #to_s method.
+  def char_length
+    @char_length ||= (@n**2 / 10) + 1
   end
 
   # Checks board if coordinates for a, b, c are similar.
