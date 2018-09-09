@@ -15,6 +15,9 @@ STATE_1_WIN_VERTICAL_3 = [[0,0,1],[0,2,1],[0,0,1]]
 STATE_1_WIN_DIAGONAL_1 = [[1,0,0],[0,1,2],[0,0,1]]
 STATE_1_WIN_DIAGONAL_2 = [[0,0,1],[0,1,2],[1,0,0]]
 
+STATE_1_WIN_4_ROWS_HORIZONTAL_1 = [[1,1,1,0],[2,0,0,0],[0,2,2,0],[0,0,0,0]]
+STATE_1_WIN_4_ROWS_DIAGONAL_1 = [[2,0,0,1],[2,0,1,0],[0,1,0,0],[0,0,0,0]]
+
 STATE_DRAW_1 = [[1,1,2],[2,2,1],[1,2,2]]
 STATE_DRAW_2 = [[1,1,2],[0,0,0],[1,2,2]]
 
@@ -46,29 +49,27 @@ class TestGameboard < Test::Unit::TestCase
   end
 
   def test_gameboard_get_winner
-    @board.instance_variable_set(:@board, STATE_1_WIN_HORIZONTAL_1)
-    assert_equal @board.get_winner, 1
-    @board.instance_variable_set(:@board, STATE_1_WIN_HORIZONTAL_2)
-    assert_equal @board.get_winner, 1
-    @board.instance_variable_set(:@board, STATE_1_WIN_HORIZONTAL_3)
-    assert_equal @board.get_winner, 1
+    [
+      STATE_1_WIN_HORIZONTAL_1,
+      STATE_1_WIN_HORIZONTAL_2,
+      STATE_1_WIN_HORIZONTAL_3,
+      STATE_1_WIN_VERTICAL_1,
+      STATE_1_WIN_VERTICAL_2,
+      STATE_1_WIN_DIAGONAL_1,
+      STATE_1_WIN_DIAGONAL_2,
+      STATE_1_WIN_4_ROWS_HORIZONTAL_1,
+      STATE_1_WIN_4_ROWS_DIAGONAL_1
+    ].each do |state|
+      @board.instance_variable_set(:@board, state)
+      @board.instance_variable_set(:@n, state.count)
+      assert_equal @board.get_winner, 1
+    end
 
-    @board.instance_variable_set(:@board, STATE_1_WIN_VERTICAL_1)
-    assert_equal @board.get_winner, 1
-    @board.instance_variable_set(:@board, STATE_1_WIN_VERTICAL_2)
-    assert_equal @board.get_winner, 1
-    @board.instance_variable_set(:@board, STATE_1_WIN_VERTICAL_3)
-    assert_equal @board.get_winner, 1
-
-    @board.instance_variable_set(:@board, STATE_1_WIN_DIAGONAL_1)
-    assert_equal @board.get_winner, 1
-    @board.instance_variable_set(:@board, STATE_1_WIN_DIAGONAL_2)
-    assert_equal @board.get_winner, 1
-
-    @board.instance_variable_set(:@board, STATE_DRAW_1)
-    assert_equal @board.get_winner, false
-    @board.instance_variable_set(:@board, STATE_DRAW_2)
-    assert_equal @board.get_winner, false
+    [ STATE_DRAW_1, STATE_DRAW_2 ].each do |state|
+      @board.instance_variable_set(:@board, state)
+      @board.instance_variable_set(:@n, state.count)
+      assert_equal @board.get_winner, false
+    end
   end
 
   def test_gameboard_utils

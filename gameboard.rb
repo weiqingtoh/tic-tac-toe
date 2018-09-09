@@ -47,8 +47,22 @@ class Gameboard
     has_empty_boxes && !get_winner
   end
 
-  def has_empty_boxes
-    @board.flatten.count(0) >= 1
+  def get_winner_name
+    winner = get_winner
+    return false unless winner
+    @player_names[winner - 1]
+  end
+
+  def next_player
+    (@n**2 - @board.flatten.count(0)) % 2 == 0 ? 1 : 2
+  end
+
+  def next_player_name
+    @player_names[next_player - 1]
+  end
+
+  def next_player_marker
+    next_player == 1 ? PLAYER_1_MARKER : PLAYER_2_MARKER
   end
 
   # Checks for the winner of the tic-tac-toe.
@@ -75,33 +89,15 @@ class Gameboard
     end
 
     # Check diagonal winners
-    indexes_to_check.each do |idx|
-      if marked(idx, idx) && similar_value([idx, idx], [idx + 1, idx + 1], [idx + 2, idx + 2])
-        return @board[idx][idx]
-      elsif marked(idx, idx + 2) && similar_value([idx, idx + 2], [idx + 1, idx + 1], [idx + 2, idx])
-        return @board[idx][idx+2]
+    indexes_to_check.product(indexes_to_check).each do |idx1, idx2|
+      if marked(idx1, idx2) && similar_value([idx1, idx2], [idx1 + 1, idx2 + 1], [idx1 + 2, idx2 + 2])
+        return @board[idx1][idx2]
+      elsif marked(idx1, idx2 + 2) && similar_value([idx1, idx2 + 2], [idx1 + 1, idx2 + 1], [idx1 + 2, idx2])
+        return @board[idx1][idx2+2]
       end
     end
 
     false
-  end
-
-  def get_winner_name
-    winner = get_winner
-    return false unless winner
-    @player_names[winner]
-  end
-
-  def next_player
-    @board.flatten.count(0) % 2 == 1 ? 1 : 2
-  end
-
-  def next_player_name
-    @player_names[next_player - 1]
-  end
-
-  def next_player_marker
-    next_player == 1 ? PLAYER_1_MARKER : PLAYER_2_MARKER
   end
 
   private
@@ -119,6 +115,10 @@ class Gameboard
 
   def print_delimiter
     "\n" + '-' * ((4 * @n) - 1) + "\n"
+  end
+
+  def has_empty_boxes
+    @board.flatten.count(0) >= 1
   end
 
   # Returns true if row and position is marked by player 1 or 2, otherwise return false
